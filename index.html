@@ -350,6 +350,18 @@ var VERTICALS={
 
 var VERTICAL_PRIORITY=['RealEstateAgent','ApartmentComplex','LodgingBusiness','SingleFamilyResidence'];
 
+// Positive non-real-estate identifiers — only trigger out-of-scope when these are detected
+// AND no vertical type is present
+var OUT_OF_SCOPE_TYPES=new Set([
+  'Restaurant','FoodEstablishment','Bakery','Bar','CafeOrCoffeeShop','FastFoodRestaurant',
+  'Store','ShoppingCenter','AutoDealer','ClothingStore','BookStore','ElectronicsStore',
+  'MedicalBusiness','Physician','Hospital','Dentist','Pharmacy','MedicalClinic',
+  'LegalService','Lawyer','Accountant','FinancialService',
+  'Hotel','Motel','Resort','BedAndBreakfast','Hostel','VacationRental',
+  'EducationalOrganization','School','CollegeOrUniversity','Library',
+  'Museum','SportsOrganization','GovernmentBuilding','GovernmentOffice'
+]);
+
 function normUrl(r){r=r.trim();if(!r)return null;if(!/^https?:\/\//i.test(r))r='https://'+r;try{return new URL(r).href;}catch(e){return null;}}
 function setLbl(t){document.getElementById('spinLabel').textContent=t;}
 function showErr(h){document.getElementById('errText').innerHTML=h;document.getElementById('errBlock').style.display='block';}
@@ -512,8 +524,8 @@ function runScan(){
       var vertical=detectVertical(found);
       document.getElementById('spinnerWrap').style.display='none';
       document.getElementById('scanBtn').disabled=false;
-      if(!vertical&&found.length>0){
-        // Has schema but no vertical match — out of scope
+      var hasOutOfScopeType=found.some(function(t){return OUT_OF_SCOPE_TYPES.has(t);});
+      if(!vertical&&hasOutOfScopeType){
         renderOutOfScope();
       } else {
         renderResults(score(found,high),found);
