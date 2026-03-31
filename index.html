@@ -9,7 +9,7 @@
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html{font-size:20px;}
-body{font-family:'Inter Tight',sans-serif;background:#0d1535;color:#ffffff;-webkit-font-smoothing:antialiased;overflow-x:hidden;min-width:320px;}
+body{font-family:'Inter Tight',sans-serif;background:#10132a;color:#ffffff;-webkit-font-smoothing:antialiased;overflow-x:hidden;min-width:320px;}
 
 .page{width:100%;max-width:800px;margin:0 auto;padding:60px 60px 90px;}
 
@@ -30,6 +30,9 @@ h1 i{font-style:italic;color:#c4beee;}
 .scan-btn:active{background:#252260;}
 .scan-btn:disabled{opacity:0.4;cursor:not-allowed;}
 .note{font-size:15px;color:#ffffff;letter-spacing:0.02em;line-height:1.65;}
+.terms-note{font-size:12px;color:rgba(255,255,255,0.4);letter-spacing:0.02em;line-height:1.6;margin-top:10px;}
+.terms-note a{color:rgba(255,255,255,0.55);text-decoration:underline;text-underline-offset:2px;}
+.terms-note a:hover{color:#ffffff;}
 
 .spinner-wrap{text-align:center;padding:56px 0;display:none;}
 .spinner{width:30px;height:30px;border:2px solid rgba(160,156,221,0.18);border-top-color:#a09cdd;border-radius:50%;animation:spin 0.85s linear infinite;margin:0 auto 18px;}
@@ -44,14 +47,17 @@ h1 i{font-style:italic;color:#c4beee;}
 .verdict-bar.v-green{background:rgba(74,222,128,0.1);border-color:#4ade80;}
 .verdict-bar.v-amber{background:rgba(251,191,36,0.1);border-color:#fbbf24;}
 .verdict-bar.v-red{background:rgba(248,113,113,0.1);border-color:#f87171;}
+.verdict-bar.v-neutral{background:rgba(160,156,221,0.07);border-color:rgba(160,156,221,0.4);}
 .v-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;margin-top:5px;}
 .v-green .v-dot{background:#4ade80;}
 .v-amber .v-dot{background:#fbbf24;}
 .v-red .v-dot{background:#f87171;}
+.v-neutral .v-dot{background:#a09cdd;}
 .v-status{font-size:11px;font-weight:500;letter-spacing:0.2em;text-transform:uppercase;margin-bottom:6px;}
 .v-green .v-status{color:#4ade80;}
 .v-amber .v-status{color:#fbbf24;}
 .v-red .v-status{color:#f87171;}
+.v-neutral .v-status{color:#a09cdd;}
 .v-text{font-size:16px;font-weight:400;color:#ffffff;line-height:1.6;}
 
 /* Coverage */
@@ -117,34 +123,42 @@ h1 i{font-style:italic;color:#c4beee;}
 .vertical-obs{padding:20px 24px;margin-bottom:22px;background:rgba(160,156,221,0.07);border-left:3px solid rgba(160,156,221,0.5);}
 .vertical-obs-label{font-size:11px;font-weight:500;letter-spacing:0.2em;text-transform:uppercase;color:#a09cdd;margin-bottom:8px;}
 .vertical-obs p{font-size:15px;font-weight:300;color:#fff;line-height:1.72;}
-.vertical-obs p strong{color:#c4beee;font-weight:500;}
 
-/* Insight */
-.insight{background:#191c3d;border:1px solid rgba(160,156,221,0.2);padding:22px 28px;margin-top:4px;}
-.insight p{font-size:16px;font-weight:300;color:#fff;line-height:1.78;}
+/* Out of scope */
+.out-of-scope{padding:24px 28px;background:rgba(160,156,221,0.07);border:1px solid rgba(160,156,221,0.2);margin-bottom:22px;}
+.out-of-scope-label{font-size:11px;font-weight:500;letter-spacing:0.2em;text-transform:uppercase;color:#a09cdd;margin-bottom:10px;}
+.out-of-scope p{font-size:15px;font-weight:300;color:#fff;line-height:1.72;}
 
 /* CTA */
 .cta-block{background:#1a1d42;border:1px solid rgba(160,156,221,0.3);padding:40px;text-align:center;margin-top:28px;}
-.cta-eyebrow{font-size:11px;font-weight:500;letter-spacing:0.16em;text-transform:uppercase;color:#a09cdd;margin-bottom:10px;}
-.cta-block h3{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:400;color:#fff;margin-bottom:12px;line-height:1.15;}
+.cta-eyebrow{font-size:12px;font-weight:500;letter-spacing:0.16em;text-transform:uppercase;color:#c4beee;margin-bottom:14px;}
+.cta-block h3{font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:400;color:#fff;margin-bottom:12px;line-height:1.15;}
 .cta-block h3 i{font-style:italic;color:#c4beee;}
-.cta-block p{font-size:15px;font-weight:300;color:#fff;line-height:1.72;margin-bottom:22px;max-width:400px;margin-left:auto;margin-right:auto;}
-.cta-services{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:26px;}
-.cta-svc{font-size:11px;font-weight:400;letter-spacing:0.1em;text-transform:uppercase;padding:6px 14px;border:1px solid rgba(160,156,221,0.3);color:#fff;text-decoration:none;transition:border-color 0.2s;}
-.cta-svc:hover{border-color:rgba(160,156,221,0.6);}
-.cta-btn{display:inline-block;background:#2d2a70;color:#fff;font-family:'Inter Tight',sans-serif;font-size:12px;font-weight:500;letter-spacing:0.15em;text-transform:uppercase;padding:16px 44px;text-decoration:none;cursor:pointer;transition:background 0.2s;margin-bottom:22px;}
-.cta-btn:hover{background:#3d3a90;}
-.cta-fine{font-family:'Inter Tight',sans-serif;font-size:32px;font-weight:500;color:#ffffff;line-height:1.3;letter-spacing:-0.01em;}
-.cta-fine-sub{font-size:14px;font-weight:300;color:rgba(255,255,255,0.75);margin-top:6px;}
+.cta-intro{font-size:16px;font-weight:300;color:#ffffff;line-height:1.72;margin-bottom:28px;max-width:460px;margin-left:auto;margin-right:auto;}
+.cta-services{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:32px;}
+.cta-svc{font-size:11px;font-weight:400;letter-spacing:0.1em;text-transform:uppercase;padding:6px 14px;border:1px solid rgba(160,156,221,0.5);color:#ffffff;text-decoration:none;}
+.path-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;}
+.path-card{border:1px solid rgba(160,156,221,0.25);padding:26px 24px;text-align:left;display:flex;flex-direction:column;}
+.path-card.featured{border-color:rgba(160,156,221,0.55);background:rgba(45,42,112,0.3);}
+.path-badge{font-size:10px;font-weight:500;letter-spacing:0.18em;text-transform:uppercase;color:#c4beee;margin-bottom:12px;display:block;}
+.path-price{font-family:'Cormorant Garamond',serif;font-size:42px;font-weight:400;color:#ffffff;line-height:1;margin-bottom:8px;}
+.path-name{font-size:15px;font-weight:500;color:#ffffff;margin-bottom:10px;}
+.path-desc{font-size:14px;font-weight:400;color:#ffffff;line-height:1.65;margin-bottom:12px;}
+.path-disclaimer{font-size:12px;font-weight:500;color:#ffffff;line-height:1.55;margin-bottom:12px;padding:8px 12px;border:1px solid rgba(160,156,221,0.3);background:rgba(160,156,221,0.07);}
+.path-credit{font-size:13px;font-weight:400;color:#c4beee;font-style:italic;margin-bottom:0;line-height:1.65;flex:1;}
+.path-btn{display:block;text-align:center;padding:14px 16px;font-size:12px;font-weight:500;letter-spacing:0.13em;text-transform:uppercase;text-decoration:none;cursor:pointer;border:none;background:#2d2a70;color:#fff;margin-top:20px;}
+.path-btn:hover{background:#3d3a90;}
+.cta-bottom{margin-top:16px;}
+.cta-fine-sub{font-size:15px;font-weight:400;color:#ffffff;white-space:nowrap;}
+.cta-fine-sub a{color:#ffffff;text-decoration:underline;text-underline-offset:2px;}
+.cta-fine-sub a:hover{color:#c4beee;}
 
 .error-block{background:rgba(248,113,113,0.05);border:1px solid rgba(248,113,113,0.2);border-left:2px solid #f87171;padding:22px 26px;margin-top:24px;display:none;}
 .error-block p{font-size:15px;font-weight:300;color:rgba(248,113,113,0.9);line-height:1.65;}
 .error-block p strong{color:#f87171;font-weight:500;}
 .error-block p a{color:#f87171;}
+
 .scan-again{display:block;text-align:center;margin-top:32px;margin-bottom:0;}
-.terms-note{font-size:12px;color:rgba(255,255,255,0.4);letter-spacing:0.02em;line-height:1.6;margin-top:10px;}
-.terms-note a{color:rgba(255,255,255,0.55);text-decoration:underline;text-underline-offset:2px;}
-.terms-note a:hover{color:#ffffff;}
 .scan-again a{display:inline-block;font-size:12px;font-weight:500;letter-spacing:0.15em;text-transform:uppercase;color:#ffffff;text-decoration:none;padding:14px 36px;border:1px solid rgba(255,255,255,0.35);transition:border-color 0.2s,background 0.2s;}
 .scan-again a:hover{border-color:#ffffff;background:rgba(255,255,255,0.06);}
 
@@ -165,6 +179,7 @@ h1 i{font-style:italic;color:#c4beee;}
   .lede{font-size:17px;}
   .url-field{height:58px;}
   .scan-btn{height:58px;}
+  .cta-fine-sub{white-space:normal;}
 }
 
 /* Mobile */
@@ -175,37 +190,19 @@ h1 i{font-style:italic;color:#c4beee;}
   h1{font-size:42px;margin-bottom:18px;}
   .lede{font-size:17px;line-height:1.72;margin-bottom:20px;}
   .built-for{font-size:12px;margin-bottom:28px;}
-
   .input-block{padding:18px;}
   .input-row{flex-direction:column;gap:10px;}
   .url-field{display:block !important;box-sizing:border-box !important;height:68px !important;min-height:68px !important;width:100% !important;font-size:16px !important;padding:0 18px !important;-webkit-appearance:none !important;}
   .scan-btn{display:block !important;box-sizing:border-box !important;height:60px !important;min-height:60px !important;width:100% !important;font-size:14px !important;padding:0 !important;}
   .note{font-size:15px;}
-
-  .results{margin-top:44px;padding-top:44px;scroll-margin-top:120px;}
+  .results{margin-top:44px;padding-top:44px;}
   .verdict-bar{padding:18px 20px;}
-  .v-status{font-size:11px;}
-  .v-text{font-size:16px;}
   .coverage-score{font-size:32px;}
-  .coverage-desc{font-size:14px;}
-  .ai-summary-label{font-size:11px;}
-  .ai-summary p{font-size:16px;}
-  .section-label{font-size:11px;}
-  .teaser-label{font-size:11px;}
-  .teaser p{font-size:15px;}
-  .vertical-obs-label{font-size:11px;}
-  .vertical-obs p{font-size:15px;}
-  .insight p{font-size:16px;}
-
   .cta-block{padding:28px 20px;}
-  .cta-eyebrow{font-size:12px;}
-  .cta-block h3{font-size:26px;}
-  .cta-block p{font-size:15px;}
-  .cta-svc{font-size:11px;padding:6px 11px;}
-  .cta-btn{padding:15px 32px;font-size:12px;}
-  .cta-fine{font-size:28px;}
-  .cta-fine-sub{font-size:14px;}
-  .scan-again a{font-size:13px;padding:13px 28px;}
+  .cta-block h3{font-size:28px;}
+  .cta-intro{font-size:15px;}
+  .path-grid{grid-template-columns:1fr;}
+  .cta-fine-sub{white-space:normal;font-size:14px;}
 }
 </style>
 </head>
@@ -230,6 +227,7 @@ h1 i{font-style:italic;color:#c4beee;}
   </div>
 
   <div class="results" id="results">
+
     <div class="verdict-bar" id="verdictBar">
       <div class="v-dot"></div>
       <div>
@@ -247,7 +245,7 @@ h1 i{font-style:italic;color:#c4beee;}
       </div>
     </div>
 
-    <div class="ai-summary" id="aiSummaryWrap">
+    <div class="ai-summary" id="aiSummaryWrap" style="display:none;">
       <p class="ai-summary-label">What AI platforms can likely identify</p>
       <p id="aiSummaryText"></p>
     </div>
@@ -267,25 +265,47 @@ h1 i{font-style:italic;color:#c4beee;}
       <p id="verticalText"></p>
     </div>
 
-    <div class="insight" id="insightWrap">
-      <p id="insightText"></p>
+    <div class="out-of-scope" id="outOfScopeWrap" style="display:none;">
+      <p class="out-of-scope-label">Outside our current service areas</p>
+      <p>This scanner is built for real estate and senior living websites — for-sale residential developments, multifamily rental communities, senior living communities, and agents and brokers. Your site doesn't appear to fall within these categories, so our results may not accurately reflect your schema needs. We don't currently offer services for all industries.</p>
     </div>
 
     <div class="scan-again"><a href="#" onclick="scanAgain();return false;">&#8593; Scan another page</a></div>
-    <div class="cta-block">
-      <p class="cta-eyebrow">Start your audit</p>
+
+    <div class="cta-block" id="ctaBlock">
+      <p class="cta-eyebrow">Ready to get started?</p>
       <h3>Make your site<br><i>Scannable by AI.</i></h3>
-      <p>A full audit, validated code, and a page-by-page implementation guide — delivered in 10 business days.</p>
+      <p class="cta-intro">Choose between a high-level assessment (or) a full audit with implementation-ready deliverables.</p>
       <div class="cta-services">
         <a class="cta-svc" href="https://uptickstrategicadvisors.com/ai-search-visibility/for-sale-residential" target="_blank">For-Sale Residential</a>
         <a class="cta-svc" href="https://uptickstrategicadvisors.com/ai-search-visibility/multifamily" target="_blank">Multifamily Rentals</a>
         <a class="cta-svc" href="https://uptickstrategicadvisors.com/ai-search-visibility/senior-living" target="_blank">Senior Living</a>
         <a class="cta-svc" href="https://uptickstrategicadvisors.com/ai-search-visibility/agents-brokers" target="_blank">Agents</a>
       </div>
-      <a class="cta-btn" href="https://uptickstrategicadvisors.com/contact" target="_blank">Start Your Audit</a>
-      <p class="cta-fine">Implementation from $3,500</p>
-      <p class="cta-fine-sub">Multi-location operators, contact us for pricing.</p>
+      <div class="path-grid">
+        <div class="path-card">
+          <span class="path-badge">High-Level</span>
+          <p class="path-price">$99</p>
+          <p class="path-name">Snapshot</p>
+          <p class="path-desc">Expert interpretation of your scan results — up to 3 highest-impact opportunities and a written assessment.</p>
+          <div class="path-disclaimer">Does not include implementation or schema code.</div>
+          <p class="path-credit">Delivered in 2 business days. Credited toward Core Audit if purchased within 14 days.</p>
+          <a class="path-btn" href="https://uptickstrategicadvisors.com/real-estate-marketing-agency-get-in-touch" target="_blank">Get Your Snapshot</a>
+        </div>
+        <div class="path-card featured">
+          <span class="path-badge">Full Solution</span>
+          <p class="path-price">$1,500</p>
+          <p class="path-name">Core Audit</p>
+          <p class="path-desc">Full diagnostic, ready-to-deploy schema markup, and page-by-page implementation recommendations.</p>
+          <p class="path-credit">Delivered in 10 business days. Includes validated JSON-LD code blocks and an implementation guide. Up to 10 pages included.</p>
+          <a class="path-btn" href="https://uptickstrategicadvisors.com/real-estate-marketing-agency-get-in-touch" target="_blank">Start Your Audit</a>
+        </div>
+      </div>
+      <div class="cta-bottom">
+        <p class="cta-fine-sub">Sites over 10 pages or multi-location operators — <a href="https://uptickstrategicadvisors.com/real-estate-marketing-agency-get-in-touch" target="_blank">contact us</a>.</p>
+      </div>
     </div>
+
   </div>
 
   <div class="error-block" id="errBlock">
@@ -294,33 +314,37 @@ h1 i{font-style:italic;color:#c4beee;}
 </div>
 
 <script>
-var KNOWN=new Set(['Organization','LocalBusiness','ProfessionalService','FinancialService','RealEstateAgent','RealEstateListing','Residence','Apartment','ApartmentComplex','House','SingleFamilyResidence','Accommodation','LodgingBusiness','WebSite','WebPage','FAQPage','BreadcrumbList','ItemList','Product','Offer','Review','AggregateRating','Person','PostalAddress','GeoCoordinates','ImageObject','VideoObject','Article','BlogPosting','Event','SiteLinksSearchBox','SearchAction','ContactPage','AboutPage']);
-var HIGH=new Set(['FAQPage','Organization','LocalBusiness','RealEstateAgent','ApartmentComplex','FinancialService','GeoCoordinates','AggregateRating','Offer','Person','ProfessionalService','LodgingBusiness','SingleFamilyResidence']);
+var KNOWN=new Set(['Organization','LocalBusiness','ProfessionalService','FinancialService','RealEstateAgent','RealEstateListing','Residence','Apartment','ApartmentComplex','House','SingleFamilyResidence','Accommodation','LodgingBusiness','WebSite','WebPage','FAQPage','BreadcrumbList','ItemList','Product','Offer','Review','AggregateRating','Person','PostalAddress','ImageObject','VideoObject','Article','BlogPosting','Event','SiteLinksSearchBox','SearchAction','ContactPage','AboutPage']);
+var HIGH=new Set(['FAQPage','Organization','LocalBusiness','RealEstateAgent','ApartmentComplex','FinancialService','AggregateRating','Offer','Person','ProfessionalService','LodgingBusiness','SingleFamilyResidence']);
 
 var VERTICALS={
   'RealEstateAgent':{
     label:'For real estate agents &amp; brokers',
-    text:'Agent and brokerage sites that rely solely on basic website schema provide AI platforms little to work with beyond a name and a location point. <strong>Service area, specialization, and structured FAQ content — when present on the page and properly marked up — provide AI platforms clearer signals</strong> about who you serve and what you do.',
-    summary:'AI platforms can likely identify this as <strong>a real estate professional with a general location.</strong> Your agent identity, business type, and location are scannable. Specialization, client focus, and FAQ content may still be missing.', summaryNoFAQ:'AI platforms can likely identify this as <strong>a real estate professional with a general location.</strong> Your agent identity, business type, and location are scannable. Specialization and client focus details may still be missing.',
-    teaser:'<strong>FAQPage schema</strong> is not detected on this page. Structured FAQ content — questions and answers visibly present on the page and marked up with FAQPage schema — are among the most effective ways to become the answer when buyers and sellers ask <strong>ChatGPT, Perplexity, or Copilot</strong> for a recommendation.'
+    text:'Agent and brokerage sites that rely solely on basic website schema provide AI platforms little to work with beyond a name and a location point. The gap between being found and being overlooked is often what\'s missing from the schema markup — not what\'s present.',
+    summary:'AI platforms can likely identify this as <strong>a real estate professional with a business presence.</strong> Your agent identity and business type are scannable.',
+    teaser:'Your scan has identified a possible gap in at least one high-impact schema category. <strong>A Snapshot will tell you what it means for your specific site and where to focus first.</strong>',
+    teaserLabel:'Possible Schema Gap Detected'
   },
   'ApartmentComplex':{
     label:'For multifamily communities',
-    text:'Most multifamily sites rely on ILS listings for digital visibility, leaving little structured data on their own domain. <strong>AI platforms cannot surface a community they cannot read</strong> — and without schema, your site is invisible to the queries that drive leasing inquiries.',
-    summary:'AI platforms can identify this as <strong>a residential rental property — but unit types, pricing, pet policy, amenities, and availability are not filled in.</strong> Without such details, this community may appear incomplete to AI platforms fielding questions from prospective residents.', summaryNoFAQ:'AI platforms can identify this as <strong>a residential rental property — but unit types, pricing, pet policy, amenities, and availability are not filled in.</strong> Without such details, this community may appear incomplete to AI platforms fielding questions from prospective residents.',
-    teaser:'<strong>FAQPage schema</strong> is not detected on this page. Structured FAQ content — questions and answers covering pricing, pet policy, lease terms, and availability, visibly present on the page and marked up with FAQPage schema — are among the most effective ways to become the answer when prospective residents ask <strong>ChatGPT, Perplexity, or Copilot</strong> what\'s available near them.'
+    text:'Most multifamily sites rely on ILS listings for digital visibility, leaving little structured data on their own domain. The gap between being found and being overlooked is often what\'s missing from the schema markup — not what\'s present.',
+    summary:'AI platforms can identify this as <strong>a multifamily community — but key details about this property may not be scannable.</strong> Without that context, this site may appear incomplete to AI platforms fielding questions from prospective residents.',
+    teaser:'Your scan has identified a possible gap in at least one high-impact schema category. <strong>A Snapshot will tell you what it means for your specific site and where to focus first.</strong>',
+    teaserLabel:'Possible Schema Gap Detected'
   },
   'LodgingBusiness':{
     label:'For senior living communities',
-    text:'Senior living community websites are among the most schema-deficient in real estate. <strong>Care levels, amenities, pricing, and location — when present on the page and properly marked up — provide AI platforms the signals</strong> families need when researching options for a parent.',
-    summary:'AI platforms can likely identify this as <strong>a senior living or lodging property in a general location.</strong> Care levels, amenities, pricing, and community details may not be scannable — the details families rely on when making high-stakes decisions.', summaryNoFAQ:'AI platforms can likely identify this as <strong>a senior living or lodging property in a general location.</strong> Care levels, amenities, pricing, and community details may not be scannable — the details families rely on when making high-stakes decisions.',
-    teaser:'<strong>FAQPage schema</strong> is not detected on this page. Structured FAQ content — questions and answers covering care levels, amenities, pricing, and how to schedule a tour, visibly present on the page and marked up with FAQPage schema — are among the most effective ways to become the answer when families ask <strong>ChatGPT, Perplexity, or Copilot</strong> about senior living options.'
+    text:'Senior living sites are among the most schema-deficient in real estate. Families researching care options for a loved one rely on AI platforms to surface communities that are clearly identifiable. The gap between being found and being overlooked is often what\'s missing from the schema markup — not what\'s present.',
+    summary:'AI platforms can likely identify this as <strong>a senior living community in a general location — but key details may not be scannable.</strong> Without that context, this site may appear incomplete to families researching care options for a loved one.',
+    teaser:'Your scan has identified a possible gap in at least one high-impact schema category. <strong>A Snapshot will tell you what it means for your specific site and where to focus first.</strong>',
+    teaserLabel:'Possible Schema Gap Detected'
   },
   'SingleFamilyResidence':{
-    label:'For residential developments',
-    text:'New development sites often rely on basic CMS-generated markup, leaving home types, pricing, and amenities unreadable to AI platforms. <strong>Structured data identifying the development as a for-sale community — with pricing, home types, and amenities marked up — provides AI platforms the signals</strong> buyers need before visiting a site.',
-    summary:'AI platforms can likely identify this as <strong>a residential property in a general location.</strong> Home types, pricing range, and development-specific details may not be scannable — the information buyers ask AI platforms about before making first contact.', summaryNoFAQ:'AI platforms can likely identify this as <strong>a residential property in a general location.</strong> Home types, pricing range, and development-specific details may not be scannable — the information buyers ask AI platforms about before making first contact.',
-    teaser:'<strong>FAQPage schema</strong> is not detected on this page. Structured FAQ content — questions and answers covering pricing, home types, amenities, and move-in readiness, visibly present on the page and marked up with FAQPage schema — are among the most effective ways to become the answer when buyers ask <strong>ChatGPT, Perplexity, or Copilot</strong> about new developments.'
+    label:'For for-sale residential developments',
+    text:'New development sites often rely on basic CMS-generated markup, leaving home types, pricing, and community details unreadable to AI platforms. The gap between being found and being overlooked is often what\'s missing from the schema markup — not what\'s present.',
+    summary:'AI platforms can likely identify this as <strong>a for-sale residential property in a general location — but key details may not be scannable.</strong> Without that context, this site may appear incomplete to AI platforms fielding questions from prospective buyers.',
+    teaser:'Your scan has identified a possible gap in at least one high-impact schema category. <strong>A Snapshot will tell you what it means for your specific site and where to focus first.</strong>',
+    teaserLabel:'Possible Schema Gap Detected'
   }
 };
 
@@ -334,82 +358,92 @@ function extractTypes(html){var types=new Set(),m;var re=/<script[^>]+type=["']a
 function collect(o,s){if(!o||typeof o!=='object')return;if(o['@type']){var t=o['@type'];(Array.isArray(t)?t:[t]).forEach(function(x){s.add(x);});}if(Array.isArray(o['@graph']))o['@graph'].forEach(function(n){collect(n,s);});Object.values(o).forEach(function(v){if(v&&typeof v==='object')collect(v,s);});}
 function score(found,high){if(found.length===0)return'red';if(found.length>=4||high.length>=2)return'green';return'amber';}
 function detectVertical(found){for(var i=0;i<VERTICAL_PRIORITY.length;i++){if(found.indexOf(VERTICAL_PRIORITY[i])>-1)return VERTICAL_PRIORITY[i];}return null;}
-function hasFAQ(found){return found.indexOf('FAQPage')>-1;}
 
 function setStateClass(level){
-  var els=['coverageWrap','aiSummaryWrap','insightWrap','teaserWrap','verticalWrap'];
+  var els=['aiSummaryWrap','teaserWrap','verticalWrap'];
   els.forEach(function(id){
     var el=document.getElementById(id);
-    el.classList.remove('v-green','v-amber','v-red');
-    el.classList.add('v-'+level);
+    if(el){el.classList.remove('v-green','v-amber','v-red');el.classList.add('v-'+level);}
   });
   var bar=document.getElementById('verdictBar');
   bar.className='verdict-bar v-'+level;
-  var pills=document.getElementById('foundPills');
-  pills.className='pills';
-  // pills color handled by parent wrapper
+  var cw=document.getElementById('coverageWrap');
+  if(cw){cw.classList.remove('v-green','v-amber','v-red');cw.classList.add('v-'+level);}
   var pw=document.getElementById('foundWrap');
-  pw.classList.remove('v-green','v-amber','v-red');
-  pw.classList.add('v-'+level);
+  if(pw){pw.classList.remove('v-green','v-amber','v-red');pw.classList.add('v-'+level);}
 }
 
 function renderResults(level,found){
+  // Hide out of scope
+  document.getElementById('outOfScopeWrap').style.display='none';
+  document.getElementById('ctaBlock').style.display='block';
+
   setStateClass(level);
 
   // Verdict
-  var sm={green:'Schema detected — strong foundation',amber:'Minimal schema markup detected',red:'No schema markup detected'};
-  var tm={green:'Multiple schema markup categories found. AI platforms have a meaningful signal to work with on this page.',amber:'Some schema markup is present, but not enough for AI platforms to accurately identify your business.',red:'No schema markup was found on this page.'};
+  var sm={
+    green:'Schema detected — good foundation',
+    amber:'Limited schema markup detected',
+    red:'No schema markup detected'
+  };
+  var tm={
+    green:'Multiple schema markup categories found. AI platforms have a meaningful signal to work with on this page.',
+    amber:'Some schema markup is present, but may not be enough for AI platforms to accurately identify your business.',
+    red:'No schema markup was found on this page.'
+  };
   document.getElementById('verdictStatus').textContent=sm[level];
   document.getElementById('verdictText').textContent=tm[level];
 
   // Coverage
   var cw=document.getElementById('coverageWrap');
   cw.style.display='block';
-  var scoreMap={green:{label:'Good',desc:'Several recommended schema markup categories detected on this page',pct:'72%'},amber:{label:'Limited',desc:'Only a few recommended schema markup categories detected on this page',pct:'28%'},red:{label:'None',desc:'No recommended schema markup categories detected on this page',pct:'4%'}};
+  var scoreMap={
+    green:{label:'Good',desc:'Several recommended schema markup categories detected on this page',pct:'72%'},
+    amber:{label:'Limited',desc:'Only limited schema markup categories detected on this page',pct:'28%'},
+    red:{label:'None',desc:'No recommended schema markup categories detected on this page',pct:'4%'}
+  };
   document.getElementById('coverageScore').textContent=scoreMap[level].label;
   document.getElementById('coverageDesc').textContent=scoreMap[level].desc;
   document.getElementById('coverageFill').style.width=scoreMap[level].pct;
 
   // Detect vertical
   var vertical=detectVertical(found);
-  var faqMissing=!hasFAQ(found);
 
   // AI Summary
+  var aiWrap=document.getElementById('aiSummaryWrap');
+  aiWrap.style.display='block';
   var summaryEl=document.getElementById('aiSummaryText');
   if(vertical&&VERTICALS[vertical]){
-    summaryEl.innerHTML=(faqMissing||!VERTICALS[vertical].summaryNoFAQ)?VERTICALS[vertical].summary:VERTICALS[vertical].summaryNoFAQ;
+    summaryEl.innerHTML=VERTICALS[vertical].summary;
   } else if(level==='red'){
-    summaryEl.innerHTML='AI platforms are reading this page as <strong>unstructured text with no machine-readable identity.</strong> No business name, no location, no services, no specialization. When a prospective client asks AI for a recommendation, this page may not appear — or may appear without enough context to be considered.';
+    summaryEl.innerHTML='AI platforms are likely reading this page as <strong>unstructured text with no scannable identity.</strong> Without schema markup, this site likely has no clear signal for AI platforms to work with. When a prospective client asks AI for a recommendation, this page may not appear — or may appear without enough context to be considered.';
   } else if(level==='amber'){
     summaryEl.innerHTML='AI platforms can identify this as <strong>a website — but not much more.</strong> Your business name, location, services, and specialization may not be machine-readable. When someone asks AI to recommend a business like yours, this page gives it little to work with.';
   } else {
-    var faqNote=faqMissing?' Specialization, client focus, and FAQ content may still be missing.':' Specialization and client focus details may still be missing.';
-    summaryEl.innerHTML='AI platforms can likely identify this as <strong>an established business with a general location.</strong> Your organization name and business type are scannable.'+faqNote;
+    summaryEl.innerHTML='AI platforms can likely identify this as <strong>an established business with a presence online.</strong> Your organization name and business type are scannable.';
   }
 
-  // Pills
+  // Pills — exclude GeoCoordinates from display
+  var displayExclude=new Set(['GeoCoordinates','PostalAddress']);
   var fp=document.getElementById('foundPills');fp.innerHTML='';
-  if(found.length){
-    found.forEach(function(t){var el=document.createElement('span');el.className='pill';el.textContent=t;fp.appendChild(el);});
+  var displayFound=found.filter(function(t){return !displayExclude.has(t);});
+  if(displayFound.length){
+    displayFound.forEach(function(t){var el=document.createElement('span');el.className='pill';el.textContent=t;fp.appendChild(el);});
     document.getElementById('foundWrap').style.display='block';
   } else {
     document.getElementById('foundWrap').style.display='none';
   }
 
-  // Teaser
+  // Teaser — only show for in-scope verticals, or red state
   var tw=document.getElementById('teaserWrap');
-  if(faqMissing){
+  if(vertical&&VERTICALS[vertical]){
     tw.style.display='block';
-    if(level==='red'){
-      document.getElementById('teaserLabel').textContent='Where to start';
-      document.getElementById('teaserText').innerHTML='<strong>FAQPage schema</strong> is among the highest-impact categories to implement first. Structured FAQ content — questions and answers visibly present on the page and marked up with FAQPage schema — are among the most effective ways to become the answer when prospective clients ask <strong>ChatGPT, Perplexity, or Copilot</strong> for a recommendation.';
-    } else if(vertical&&VERTICALS[vertical]){
-      document.getElementById('teaserLabel').textContent='Highest-impact gap identified';
-      document.getElementById('teaserText').innerHTML=VERTICALS[vertical].teaser;
-    } else {
-      document.getElementById('teaserLabel').textContent='Highest-impact gap identified';
-      document.getElementById('teaserText').innerHTML='<strong>FAQPage schema</strong> is not detected on this page. Structured FAQ content — questions and answers visibly present on the page and marked up with FAQPage schema — are among the most effective ways to become the answer when prospective clients ask <strong>ChatGPT, Perplexity, or Copilot</strong> for a recommendation.';
-    }
+    document.getElementById('teaserLabel').textContent=VERTICALS[vertical].teaserLabel;
+    document.getElementById('teaserText').innerHTML=VERTICALS[vertical].teaser;
+  } else if(level==='red'){
+    tw.style.display='block';
+    document.getElementById('teaserLabel').textContent='Where to start';
+    document.getElementById('teaserText').innerHTML='Your scan has identified significant gaps in schema coverage. <strong>A Snapshot will identify your highest-impact opportunities and where to focus first.</strong>';
   } else {
     tw.style.display='none';
   }
@@ -424,19 +458,36 @@ function renderResults(level,found){
     vw.style.display='none';
   }
 
-  // Insight
-  var insightMap={
-    green:'Your page has schema markup in place — but complete coverage is rarely achieved without a dedicated audit. The gaps that remain are often the ones AI platforms rely on most when deciding whether to surface your business.',
-    amber:'Your page has some schema markup, but not enough for AI platforms to accurately identify who you are, what you do, and where you do it. The difference between being found and being overlooked often comes down to the markup that isn\'t there yet.',
-    red:'No schema markup detected. AI platforms have no structured signal to work with on this page — no name, no location, no services, no specialization. That\'s the gap a full audit is designed to close.'
-  };
-  document.getElementById('insightText').textContent=insightMap[level];
+  var r=document.getElementById('results');
+  r.classList.add('on');
+  setTimeout(function(){
+    var top=r.getBoundingClientRect().top+window.pageYOffset-100;
+    window.scrollTo({top:top,behavior:'smooth'});
+    try{window.parent.postMessage({action:'scrollToTop',offset:120},'*');}catch(e){}
+  },100);
+}
+
+function renderOutOfScope(){
+  // Show out of scope, hide CTA
+  document.getElementById('outOfScopeWrap').style.display='block';
+  document.getElementById('ctaBlock').style.display='none';
+  document.getElementById('coverageWrap').style.display='none';
+  document.getElementById('aiSummaryWrap').style.display='none';
+  document.getElementById('foundWrap').style.display='none';
+  document.getElementById('teaserWrap').style.display='none';
+  document.getElementById('verticalWrap').style.display='none';
+
+  var bar=document.getElementById('verdictBar');
+  bar.className='verdict-bar v-neutral';
+  document.getElementById('verdictStatus').textContent='Scan complete';
+  document.getElementById('verdictText').textContent='Schema markup was scanned and results are available — however this site does not appear to be in one of our current service areas.';
 
   var r=document.getElementById('results');
   r.classList.add('on');
   setTimeout(function(){
     var top=r.getBoundingClientRect().top+window.pageYOffset-100;
     window.scrollTo({top:top,behavior:'smooth'});
+    try{window.parent.postMessage({action:'scrollToTop',offset:120},'*');}catch(e){}
   },100);
 }
 
@@ -458,14 +509,20 @@ function runScan(){
       var allTypes=extractTypes(html);
       var found=Array.from(allTypes).filter(function(t){return KNOWN.has(t);});
       var high=found.filter(function(t){return HIGH.has(t);});
+      var vertical=detectVertical(found);
       document.getElementById('spinnerWrap').style.display='none';
-      renderResults(score(found,high),found);
       document.getElementById('scanBtn').disabled=false;
+      if(!vertical&&found.length>0){
+        // Has schema but no vertical match — out of scope
+        renderOutOfScope();
+      } else {
+        renderResults(score(found,high),found);
+      }
     })
     .catch(function(e){
       document.getElementById('spinnerWrap').style.display='none';
       var msg=e.message||'Unknown error.';
-      showErr('<strong>Scan could not complete</strong> — '+msg+'<br><br>Some sites block external requests. Try a different URL, or <a href="https://uptickstrategicadvisors.com/contact">contact us</a> for a manual audit.');
+      showErr('<strong>Scan could not complete</strong> — '+msg+'<br><br>Some sites block external requests. Try a different URL, or <a href="https://uptickstrategicadvisors.com/real-estate-marketing-agency-get-in-touch">contact us</a> for a manual audit.');
       document.getElementById('scanBtn').disabled=false;
     });
 }
