@@ -399,7 +399,7 @@ function buildGenericSummary(level,found){
   var hasReview=f.has('AggregateRating')||f.has('Review');
   var hasOrg=f.has('Organization');
 
-  var structuralTypes=new Set(['WebSite','WebPage','BreadcrumbList','ImageObject','SearchAction','SiteLinksSearchBox','ItemList','Organization']);
+  var structuralTypes=new Set(['WebSite','WebPage','BreadcrumbList','ImageObject','VideoObject','SearchAction','SiteLinksSearchBox','ItemList','Organization']);
   var structuralOnly=found.every(function(t){return structuralTypes.has(t);});
 
   // Tier 1 — Rich: LocalBusiness/Professional + Person + FAQ
@@ -437,8 +437,27 @@ function buildGenericSummary(level,found){
     return 'AI platforms can identify this as <strong>an organization associated with a named individual.</strong> Your entity name and person identity are scannable — but business type, location, and services may not be.';
   }
 
-  // Tier 8 — Organization with only structural types
+  // Tier 8 — Organization with only structural types — but check for meaningful signals
   if(hasOrg&&structuralOnly){
+    var hasNav=f.has('BreadcrumbList');
+    var hasSearch=f.has('SearchAction')||f.has('SiteLinksSearchBox');
+    var hasMedia=f.has('ImageObject')||f.has('VideoObject');
+
+    if(hasNav&&hasSearch&&hasMedia){
+      return 'AI platforms can identify this as <strong>an established organization with a structured, content-rich web presence.</strong> Your site has defined navigation, internal search, and media content — but business type, location, and services do not appear to be machine-readable.';
+    }
+    if(hasNav&&hasSearch){
+      return 'AI platforms can identify this as <strong>an organization with a structured web presence and internal search.</strong> Your site has a defined content hierarchy — but business type, location, and services do not appear to be machine-readable.';
+    }
+    if(hasNav&&hasMedia){
+      return 'AI platforms can identify this as <strong>an organization with a structured, media-rich web presence.</strong> Your site has a defined content hierarchy — but business type, location, and services do not appear to be machine-readable.';
+    }
+    if(hasNav){
+      return 'AI platforms can identify this as <strong>an organization with a structured web presence.</strong> Your site has a defined content hierarchy — but business type, location, services, and specialization do not appear to be machine-readable.';
+    }
+    if(hasSearch){
+      return 'AI platforms can identify this as <strong>an organization with a searchable web presence.</strong> Your site has internal search functionality — but business type, location, and services do not appear to be machine-readable.';
+    }
     return 'AI platforms can identify this as <strong>an organization with a web presence — but little else.</strong> Business type, location, services, and specialization do not appear to be machine-readable.';
   }
 
@@ -452,7 +471,17 @@ function buildGenericSummary(level,found){
     return 'AI platforms can identify <strong>structured FAQ content on this page.</strong> FAQ answers may be surfaced in AI-generated responses — but no clear business identity or location appears to be machine-readable.';
   }
 
-  // Tier 11 — Only structural/navigational types
+  // Tier 11 — Only structural/navigational types, no Organization
+  var hasNav2=f.has('BreadcrumbList');
+  var hasSearch2=f.has('SearchAction')||f.has('SiteLinksSearchBox');
+  var hasMedia2=f.has('ImageObject')||f.has('VideoObject');
+
+  if(hasNav2&&hasSearch2){
+    return 'AI platforms can identify this as <strong>a structured website with internal search.</strong> Your site has a defined content hierarchy — but no business identity, location, or services appear to be machine-readable.';
+  }
+  if(hasNav2){
+    return 'AI platforms can identify this as <strong>a structured website with defined navigation.</strong> Your content hierarchy is scannable — but no business identity, location, or services appear to be machine-readable.';
+  }
   return 'AI platforms can identify this as <strong>a website — but no business identity is machine-readable.</strong> Without structured data identifying your business type, location, or services, this page provides AI platforms little to work with.';
 }
 
