@@ -454,8 +454,12 @@ function buildGenericSummary(level,found){
     return 'AI platforms can likely identify this as <strong>a professional services business associated with a named individual.</strong> Your business type and identity are scannable — but services, specialization, and location detail may not be.';
   }
 
-  // Tier 5 — LocalBusiness/Professional alone
+  // Tier 5 — LocalBusiness/Professional alone — skeptical if no supporting types
   if(hasLocal){
+    var hasSupporting=f.has('Organization')||f.has('Person')||f.has('ProfessionalService')||f.has('LocalBusiness')&&f.has('Organization');
+    if(!hasSupporting){
+      return 'AI platforms may identify this as <strong>a local business — but this signal alone may not be enough</strong> for AI platforms to accurately identify your business type, location, or services. Additional schema markup is likely needed.';
+    }
     return 'AI platforms can likely identify this as <strong>a local business.</strong> Your business type is scannable — but specialization, services, and client focus may not be machine-readable.';
   }
 
