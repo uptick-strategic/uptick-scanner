@@ -356,13 +356,42 @@ var VERTICAL_PRIORITY=['RealEstateAgent','ApartmentComplex','LodgingBusiness','S
 // Positive non-real-estate identifiers — only trigger out-of-scope when these are detected
 // AND no vertical type is present
 var OUT_OF_SCOPE_TYPES=new Set([
+  // Food & Beverage
   'Restaurant','FoodEstablishment','Bakery','Bar','CafeOrCoffeeShop','FastFoodRestaurant',
+  'Winery','Brewery','NightClub','FoodTruck','IceCreamShop','PizzaDelivery',
+  // Retail
   'Store','ShoppingCenter','AutoDealer','ClothingStore','BookStore','ElectronicsStore',
+  'HomeGoodsStore','FurnitureStore','HardwareStore','GardenStore','PetStore',
+  'ToyStore','JewelryStore','MusicStore','ComputerStore',
+  // Medical & Health
   'MedicalBusiness','Physician','Hospital','Dentist','Pharmacy','MedicalClinic',
-  'LegalService','Lawyer','Accountant','FinancialService',
-  'Hotel','Motel','Resort','BedAndBreakfast','Hostel','VacationRental',
+  'Optician','Veterinary','BeautySalon','HairSalon','DaySpa','HealthClub',
+  // Legal & Financial
+  'LegalService','Lawyer','Accountant','Notary','BankOrCreditUnion',
+  // Hospitality (non-senior)
+  'Hotel','Motel','Resort','BedAndBreakfast','Hostel','Campground',
+  // Education
   'EducationalOrganization','School','CollegeOrUniversity','Library',
-  'Museum','SportsOrganization','GovernmentBuilding','GovernmentOffice'
+  'Preschool','ChildCare','DrivingSchool',
+  // Arts, Culture & Entertainment
+  'Museum','ArtGallery','MovieTheater','TouristAttraction','AmusementPark',
+  'Zoo','Aquarium','Casino','ComedyClub','MusicVenue','PerformingArtsTheater',
+  'TheaterGroup','EventVenue',
+  // Sports
+  'SportsOrganization','SportsTeam','StadiumOrArena','SportsActivityLocation',
+  // Automotive
+  'AutoRepair','AutoWash','GasStation','ParkingFacility',
+  // Home Services
+  'Plumber','Electrician','GeneralContractor','HVACBusiness','MovingCompany','RoofingContractor',
+  // Transportation
+  'TaxiService','BusStation','TrainStation','Airport','SubwayStation',
+  // Travel
+  'TravelAgency',
+  // Civic & Religious
+  'GovernmentBuilding','GovernmentOffice','PlaceOfWorship','CivicStructure',
+  'Cemetery','Crematorium',
+  // Employment
+  'EmploymentAgency'
 ]);
 
 function normUrl(r){r=r.trim();if(!r)return null;if(!/^https?:\/\//i.test(r))r='https://'+r;try{return new URL(r).href;}catch(e){return null;}}
@@ -569,11 +598,10 @@ function renderResults(level,found){
     vw.style.display='none';
   }
 
-  // Scope note — show only when no vertical detected AND no real-estate-adjacent types present
-  var realEstateAdjacent=new Set(['RealEstateListing','Residence','House','Apartment','Accommodation','RealEstateAgent','ApartmentComplex','LodgingBusiness','SingleFamilyResidence','LocalBusiness','ProfessionalService']);
-  var hasRealEstateSignal=found.some(function(t){return realEstateAdjacent.has(t);});
+  // Scope note — only show when a positively non-real-estate type is detected but no vertical
   var scopeNote=document.getElementById('scopeNote');
-  if(!vertical&&!hasRealEstateSignal){
+  var hasOutOfScopeSignal=found.some(function(t){return OUT_OF_SCOPE_TYPES.has(t);});
+  if(!vertical&&hasOutOfScopeSignal){
     scopeNote.style.display='block';
   } else {
     scopeNote.style.display='none';
