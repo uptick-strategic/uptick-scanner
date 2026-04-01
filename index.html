@@ -575,12 +575,10 @@ function renderResults(level,found,jsonldSet){
     summaryEl.innerHTML=buildGenericSummary(level,found);
   }
 
-  // Pills — only show types confirmed in JSON-LD for ambiguous types
-  // Always exclude noise types regardless of source
+  // Pills — only show ambiguous types if confirmed in JSON-LD
   var alwaysExclude=new Set(['GeoCoordinates','PostalAddress']);
-  // Only show these types if confirmed in JSON-LD, not microdata alone
-  var jsonldOnly=new Set(['LocalBusiness']);
-  var safeJsonldSet=jsonldSet||new Set();
+  var jsonldOnly=new Set(['LocalBusiness','Organization']);
+  var safeJsonldSet=(jsonldSet instanceof Set)?jsonldSet:new Set();
   var fp=document.getElementById('foundPills');fp.innerHTML='';
   var displayFound=found.filter(function(t){
     if(alwaysExclude.has(t))return false;
