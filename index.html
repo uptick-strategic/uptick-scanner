@@ -385,6 +385,62 @@ function setStateClass(level){
   if(pw){pw.classList.remove('v-green','v-amber','v-red');pw.classList.add('v-'+level);}
 }
 
+function buildGenericSummary(level,found){
+  var f=new Set(found);
+
+  // Red — nothing detected
+  if(level==='red'){
+    return 'AI platforms are likely reading this page as <strong>unstructured text with no scannable identity.</strong> Without schema markup, this site has no clear signal for AI platforms to work with. When a prospective client asks AI for a recommendation, this page may not appear — or may appear without enough context to be considered.';
+  }
+
+  // Rich professional identity — LocalBusiness/ProfessionalService + Person + reviews
+  if((f.has('LocalBusiness')||f.has('ProfessionalService'))&&f.has('Person')&&(f.has('AggregateRating')||f.has('Review'))){
+    return 'AI platforms can likely identify this as <strong>a professional services business with a named individual, a local presence, and client reviews.</strong> Your identity, location, and social proof are machine-readable — a solid foundation.';
+  }
+
+  // LocalBusiness or ProfessionalService + Person
+  if((f.has('LocalBusiness')||f.has('ProfessionalService'))&&f.has('Person')){
+    return 'AI platforms can likely identify this as <strong>a professional services business associated with a named individual.</strong> Your business type and identity are scannable — but services, specialization, and location detail may not be.';
+  }
+
+  // LocalBusiness or ProfessionalService + FAQPage
+  if((f.has('LocalBusiness')||f.has('ProfessionalService'))&&f.has('FAQPage')){
+    return 'AI platforms can likely identify this as <strong>a local or professional services business with structured FAQ content.</strong> Your business type is scannable and FAQ content may be surfaced in AI-generated answers.';
+  }
+
+  // LocalBusiness or ProfessionalService alone
+  if(f.has('LocalBusiness')||f.has('ProfessionalService')){
+    return 'AI platforms can likely identify this as <strong>a local or professional services business.</strong> Your business type is scannable — but specialization, services, and client focus may not be machine-readable.';
+  }
+
+  // Organization + FAQPage
+  if(f.has('Organization')&&f.has('FAQPage')){
+    return 'AI platforms can likely identify this as <strong>an organization with structured FAQ content.</strong> Your entity name is scannable and FAQ answers may be surfaced — but business type and services may still be unclear.';
+  }
+
+  // Organization + Person
+  if(f.has('Organization')&&f.has('Person')){
+    return 'AI platforms can likely identify this as <strong>an organization associated with a named individual.</strong> Your entity name and person identity are scannable — but business type, location, and services may not be.';
+  }
+
+  // Organization alone or with only structural types
+  if(f.has('Organization')){
+    var structuralOnly=found.every(function(t){return['Organization','WebSite','WebPage','BreadcrumbList','ImageObject','SearchAction','SiteLinksSearchBox','ItemList'].indexOf(t)>-1;});
+    if(structuralOnly){
+      return 'AI platforms can identify this as <strong>an organization with a web presence — but little else.</strong> Business type, location, services, and specialization do not appear to be machine-readable.';
+    }
+    return 'AI platforms can likely identify this as <strong>an organization with a web presence.</strong> Your entity name is scannable — but business type, location, and services may not be clearly machine-readable.';
+  }
+
+  // FAQPage only with structural types
+  if(f.has('FAQPage')){
+    return 'AI platforms can identify <strong>structured FAQ content on this page.</strong> FAQ answers may be surfaced in AI-generated responses — but no clear business identity or location appears to be machine-readable.';
+  }
+
+  // Only structural/navigational types — WebSite, WebPage, BreadcrumbList etc.
+  return 'AI platforms can identify this as <strong>a website — but no business identity is machine-readable.</strong> Without structured data identifying your business type, location, or services, this page provides AI platforms little to work with.';
+}
+
 function renderResults(level,found){
   // Hide out of scope
   document.getElementById('outOfScopeWrap').style.display='none';
@@ -427,12 +483,8 @@ function renderResults(level,found){
   var summaryEl=document.getElementById('aiSummaryText');
   if(vertical&&VERTICALS[vertical]){
     summaryEl.innerHTML=VERTICALS[vertical].summary;
-  } else if(level==='red'){
-    summaryEl.innerHTML='AI platforms are likely reading this page as <strong>unstructured text with no scannable identity.</strong> Without schema markup, this site likely has no clear signal for AI platforms to work with. When a prospective client asks AI for a recommendation, this page may not appear — or may appear without enough context to be considered.';
-  } else if(level==='amber'){
-    summaryEl.innerHTML='AI platforms can identify this as <strong>a website — but not much more.</strong> Your business name, location, services, and specialization may not be machine-readable. When someone asks AI to recommend a business like yours, this page gives it little to work with.';
   } else {
-    summaryEl.innerHTML='AI platforms can likely identify this as <strong>an established business with a presence online.</strong> Your organization name and business type are scannable.';
+    summaryEl.innerHTML=buildGenericSummary(level,found);
   }
 
   // Pills — exclude GeoCoordinates from display
