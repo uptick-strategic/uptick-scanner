@@ -580,16 +580,6 @@ function renderResults(level,found,jsonldSet){
   // Detect vertical
   var vertical=detectVertical(found);
 
-  // AI Summary
-  var aiWrap=document.getElementById('aiSummaryWrap');
-  aiWrap.style.display='block';
-  var summaryEl=document.getElementById('aiSummaryText');
-  if(vertical&&VERTICALS[vertical]){
-    summaryEl.innerHTML=VERTICALS[vertical].summary;
-  } else {
-    summaryEl.innerHTML=buildGenericSummary(level,found);
-  }
-
   // Pills — only show ambiguous types if confirmed in JSON-LD
   var alwaysExclude=new Set(['GeoCoordinates','PostalAddress','LocalBusiness']);
   var fp=document.getElementById('foundPills');fp.innerHTML='';
@@ -597,6 +587,15 @@ function renderResults(level,found,jsonldSet){
     if(alwaysExclude.has(t))return false;
     return true;
   });
+
+  // Use displayFound for summary — excludes microdata noise like LocalBusiness
+  var summaryEl=document.getElementById('aiSummaryText');
+  aiWrap.style.display='block';
+  if(vertical&&VERTICALS[vertical]){
+    summaryEl.innerHTML=VERTICALS[vertical].summary;
+  } else {
+    summaryEl.innerHTML=buildGenericSummary(level,displayFound);
+  }
   if(displayFound.length){
     displayFound.forEach(function(t){var el=document.createElement('span');el.className='pill';el.textContent=t;fp.appendChild(el);});
     document.getElementById('foundWrap').style.display='block';
