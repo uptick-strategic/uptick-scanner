@@ -398,7 +398,15 @@ function normUrl(r){r=r.trim();if(!r)return null;if(!/^https?:\/\//i.test(r))r='
 function setLbl(t){document.getElementById('spinLabel').textContent=t;}
 function showErr(h){document.getElementById('errText').innerHTML=h;document.getElementById('errBlock').style.display='block';}
 function hideErr(){document.getElementById('errBlock').style.display='none';}
-function extractTypes(html){var types=new Set(),m;var re=/<script[^>]+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi;while((m=re.exec(html))!==null){try{collect(JSON.parse(m[1].trim()),types);}catch(e){}}var mre=/itemtype=["'][^"']*schema\.org\/([A-Za-z]+)["']/gi;while((m=mre.exec(html))!==null)types.add(m[1]);return types;}
+function extractTypes(html){
+  var jsonldTypes=new Set(),m;
+  var re=/<script[^>]+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi;
+  while((m=re.exec(html))!==null){try{collect(JSON.parse(m[1].trim()),jsonldTypes);}catch(e){}}
+  var microdataTypes=new Set();
+  var mre=/itemtype=["'][^"']*schema\.org\/([A-Za-z]+)["']/gi;
+  while((m=mre.exec(html))!==null)microdataTypes.add(m[1]);
+  return {jsonld:jsonldTypes,microdata:microdataTypes};
+}
 function collect(o,s){if(!o||typeof o!=='object')return;if(o['@type']){var t=o['@type'];(Array.isArray(t)?t:[t]).forEach(function(x){s.add(x);});}if(Array.isArray(o['@graph']))o['@graph'].forEach(function(n){collect(n,s);});Object.values(o).forEach(function(v){if(v&&typeof v==='object')collect(v,s);});}
 function score(found,high){if(found.length===0)return'red';if(found.length>=4||high.length>=2)return'green';return'amber';}
 function detectVertical(found){for(var i=0;i<VERTICAL_PRIORITY.length;i++){if(found.indexOf(VERTICAL_PRIORITY[i])>-1)return VERTICAL_PRIORITY[i];}return null;}
@@ -521,7 +529,7 @@ function buildGenericSummary(level,found){
   return 'AI platforms can identify this as <strong>a website — but no business identity is machine-readable.</strong> Without structured data identifying your business type, location, or services, this page provides AI platforms little to work with.';
 }
 
-function renderResults(level,found){
+function renderResults(level,found,jsonldFound){
   // Hide out of scope
   document.getElementById('outOfScopeWrap').style.display='none';
   document.getElementById('ctaBlock').style.display='block';
@@ -567,10 +575,17 @@ function renderResults(level,found){
     summaryEl.innerHTML=buildGenericSummary(level,found);
   }
 
-  // Pills — exclude GeoCoordinates from display
+  // Pills — use JSON-LD confirmed types for display
+  // Exclude display-only noise types and microdata-only LocalBusiness
   var displayExclude=new Set(['GeoCoordinates','PostalAddress']);
   var fp=document.getElementById('foundPills');fp.innerHTML='';
-  var displayFound=found.filter(function(t){return !displayExclude.has(t);});
+  var jsonldSet=new Set(jsonldFound||found);
+  var displayFound=found.filter(function(t){
+    if(displayExclude.has(t))return false;
+    // Only show LocalBusiness if confirmed in JSON-LD
+    if(t==='LocalBusiness'&&!jsonldSet.has('LocalBusiness'))return false;
+    return true;
+  });
   if(displayFound.length){
     displayFound.forEach(function(t){var el=document.createElement('span');el.className='pill';el.textContent=t;fp.appendChild(el);});
     document.getElementById('foundWrap').style.display='block';
@@ -660,8 +675,10 @@ function runScan(){
       var html=json.contents||'';
       if(!html)throw new Error('No content returned.');
       setLbl('Analysing schema markup\u2026');
-      var allTypes=extractTypes(html);
+      var extracted=extractTypes(html);
+      var allTypes=new Set([...extracted.jsonld,...extracted.microdata]);
       var found=Array.from(allTypes).filter(function(t){return KNOWN.has(t);});
+      var jsonldFound=Array.from(extracted.jsonld).filter(function(t){return KNOWN.has(t);});
       var high=found.filter(function(t){return HIGH.has(t);});
       var vertical=detectVertical(found);
       document.getElementById('spinnerWrap').style.display='none';
@@ -670,7 +687,7 @@ function runScan(){
       if(!vertical&&hasOutOfScopeType){
         renderOutOfScope();
       } else {
-        renderResults(score(found,high),found);
+        renderResults(score(found,high),found,jsonldFound);
       }
     })
     .catch(function(e){
