@@ -581,13 +581,10 @@ function renderResults(level,found,jsonldSet){
   }
 
   // Pills — only show ambiguous types if confirmed in JSON-LD
-  var alwaysExclude=new Set(['GeoCoordinates','PostalAddress']);
-  var jsonldOnly=new Set(['LocalBusiness','Organization']);
-  var safeJsonldSet=(jsonldSet instanceof Set)?jsonldSet:new Set();
+  var alwaysExclude=new Set(['GeoCoordinates','PostalAddress','LocalBusiness']);
   var fp=document.getElementById('foundPills');fp.innerHTML='';
   var displayFound=found.filter(function(t){
     if(alwaysExclude.has(t))return false;
-    if(jsonldOnly.has(t)&&!safeJsonldSet.has(t))return false;
     return true;
   });
   if(displayFound.length){
