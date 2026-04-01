@@ -589,6 +589,7 @@ function renderResults(level,found,jsonldSet){
   });
 
   // Use displayFound for summary — excludes microdata noise like LocalBusiness
+  var aiWrap=document.getElementById('aiSummaryWrap');
   var summaryEl=document.getElementById('aiSummaryText');
   aiWrap.style.display='block';
   if(vertical&&VERTICALS[vertical]){
