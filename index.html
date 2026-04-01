@@ -569,9 +569,9 @@ function renderResults(level,found,jsonldSet){
   var cw=document.getElementById('coverageWrap');
   cw.style.display='block';
   var scoreMap={
-    green:{label:'Clearly Detectable',desc:'Several schema markup categories detected — AI platforms have a meaningful signal on this page',pct:'72%'},
-    amber:{label:'Partially Detectable',desc:'Limited schema markup detected — AI platforms may have difficulty fully identifying this page',pct:'28%'},
-    red:{label:'Not Detectable',desc:'No schema markup detected — this page is not identifiable by AI platforms',pct:'4%'}
+    green:{label:'Clearly Detectable',desc:'Several schema markup categories detected on this page',pct:'72%'},
+    amber:{label:'Partially Detectable',desc:'Limited schema markup categories detected on this page',pct:'28%'},
+    red:{label:'Not Detectable',desc:'No schema markup categories detected on this page',pct:'4%'}
   };
   document.getElementById('coverageScore').textContent=scoreMap[level].label;
   document.getElementById('coverageDesc').textContent=scoreMap[level].desc;
