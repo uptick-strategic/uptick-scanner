@@ -393,51 +393,66 @@ function buildGenericSummary(level,found){
     return 'AI platforms are likely reading this page as <strong>unstructured text with no scannable identity.</strong> Without schema markup, this site has no clear signal for AI platforms to work with. When a prospective client asks AI for a recommendation, this page may not appear — or may appear without enough context to be considered.';
   }
 
-  // Rich professional identity — LocalBusiness/ProfessionalService + Person + reviews
-  if((f.has('LocalBusiness')||f.has('ProfessionalService'))&&f.has('Person')&&(f.has('AggregateRating')||f.has('Review'))){
-    return 'AI platforms can likely identify this as <strong>a professional services business with a named individual, a local presence, and client reviews.</strong> Your identity, location, and social proof are machine-readable — a solid foundation.';
+  var hasLocal=f.has('LocalBusiness')||f.has('ProfessionalService');
+  var hasPerson=f.has('Person');
+  var hasFAQ=f.has('FAQPage');
+  var hasReview=f.has('AggregateRating')||f.has('Review');
+  var hasOrg=f.has('Organization');
+
+  var structuralTypes=new Set(['WebSite','WebPage','BreadcrumbList','ImageObject','SearchAction','SiteLinksSearchBox','ItemList','Organization']);
+  var structuralOnly=found.every(function(t){return structuralTypes.has(t);});
+
+  // Tier 1 — Rich: LocalBusiness/Professional + Person + FAQ
+  if(hasLocal&&hasPerson&&hasFAQ){
+    return 'AI platforms can likely identify this as <strong>a professional services business with a named individual and structured FAQ content.</strong> Your business identity is well-established — FAQ answers may also be surfaced directly in AI-generated responses.';
   }
 
-  // LocalBusiness or ProfessionalService + Person
-  if((f.has('LocalBusiness')||f.has('ProfessionalService'))&&f.has('Person')){
+  // Tier 2 — LocalBusiness/Professional + Person + Reviews
+  if(hasLocal&&hasPerson&&hasReview){
+    return 'AI platforms can likely identify this as <strong>a professional services business with a named individual and client reviews.</strong> Your business type, identity, and social proof are machine-readable — a solid foundation.';
+  }
+
+  // Tier 3 — LocalBusiness/Professional + FAQPage
+  if(hasLocal&&hasFAQ){
+    return 'AI platforms can likely identify this as <strong>a local or professional services business with structured FAQ content.</strong> Your business type is scannable and FAQ answers may be surfaced in AI-generated responses.';
+  }
+
+  // Tier 4 — LocalBusiness/Professional + Person
+  if(hasLocal&&hasPerson){
     return 'AI platforms can likely identify this as <strong>a professional services business associated with a named individual.</strong> Your business type and identity are scannable — but services, specialization, and location detail may not be.';
   }
 
-  // LocalBusiness or ProfessionalService + FAQPage
-  if((f.has('LocalBusiness')||f.has('ProfessionalService'))&&f.has('FAQPage')){
-    return 'AI platforms can likely identify this as <strong>a local or professional services business with structured FAQ content.</strong> Your business type is scannable and FAQ content may be surfaced in AI-generated answers.';
+  // Tier 5 — LocalBusiness/Professional alone
+  if(hasLocal){
+    return 'AI platforms can likely identify this as <strong>a local business.</strong> Your business type is scannable — but specialization, services, and client focus may not be machine-readable.';
   }
 
-  // LocalBusiness or ProfessionalService alone
-  if(f.has('LocalBusiness')||f.has('ProfessionalService')){
-    return 'AI platforms can likely identify this as <strong>a local or professional services business.</strong> Your business type is scannable — but specialization, services, and client focus may not be machine-readable.';
+  // Tier 6 — Organization + FAQ
+  if(hasOrg&&hasFAQ){
+    return 'AI platforms can identify this as <strong>an organization with structured FAQ content.</strong> Your entity name is scannable and FAQ answers may be surfaced — but business type and services may still be unclear to AI platforms.';
   }
 
-  // Organization + FAQPage
-  if(f.has('Organization')&&f.has('FAQPage')){
-    return 'AI platforms can likely identify this as <strong>an organization with structured FAQ content.</strong> Your entity name is scannable and FAQ answers may be surfaced — but business type and services may still be unclear.';
+  // Tier 7 — Organization + Person
+  if(hasOrg&&hasPerson){
+    return 'AI platforms can identify this as <strong>an organization associated with a named individual.</strong> Your entity name and person identity are scannable — but business type, location, and services may not be.';
   }
 
-  // Organization + Person
-  if(f.has('Organization')&&f.has('Person')){
-    return 'AI platforms can likely identify this as <strong>an organization associated with a named individual.</strong> Your entity name and person identity are scannable — but business type, location, and services may not be.';
+  // Tier 8 — Organization with only structural types
+  if(hasOrg&&structuralOnly){
+    return 'AI platforms can identify this as <strong>an organization with a web presence — but little else.</strong> Business type, location, services, and specialization do not appear to be machine-readable.';
   }
 
-  // Organization alone or with only structural types
-  if(f.has('Organization')){
-    var structuralOnly=found.every(function(t){return['Organization','WebSite','WebPage','BreadcrumbList','ImageObject','SearchAction','SiteLinksSearchBox','ItemList'].indexOf(t)>-1;});
-    if(structuralOnly){
-      return 'AI platforms can identify this as <strong>an organization with a web presence — but little else.</strong> Business type, location, services, and specialization do not appear to be machine-readable.';
-    }
-    return 'AI platforms can likely identify this as <strong>an organization with a web presence.</strong> Your entity name is scannable — but business type, location, and services may not be clearly machine-readable.';
+  // Tier 9 — Organization with some other types
+  if(hasOrg){
+    return 'AI platforms can identify this as <strong>an organization with a web presence.</strong> Your entity name is scannable — but business type, location, and services may not be clearly machine-readable.';
   }
 
-  // FAQPage only with structural types
-  if(f.has('FAQPage')){
+  // Tier 10 — FAQPage only
+  if(hasFAQ){
     return 'AI platforms can identify <strong>structured FAQ content on this page.</strong> FAQ answers may be surfaced in AI-generated responses — but no clear business identity or location appears to be machine-readable.';
   }
 
-  // Only structural/navigational types — WebSite, WebPage, BreadcrumbList etc.
+  // Tier 11 — Only structural/navigational types
   return 'AI platforms can identify this as <strong>a website — but no business identity is machine-readable.</strong> Without structured data identifying your business type, location, or services, this page provides AI platforms little to work with.';
 }
 
