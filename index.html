@@ -569,9 +569,11 @@ function renderResults(level,found){
     vw.style.display='none';
   }
 
-  // Scope note — show only when no vertical detected
+  // Scope note — show only when no vertical detected AND no real-estate-adjacent types present
+  var realEstateAdjacent=new Set(['RealEstateListing','Residence','House','Apartment','Accommodation','RealEstateAgent','ApartmentComplex','LodgingBusiness','SingleFamilyResidence','LocalBusiness','ProfessionalService']);
+  var hasRealEstateSignal=found.some(function(t){return realEstateAdjacent.has(t);});
   var scopeNote=document.getElementById('scopeNote');
-  if(!vertical){
+  if(!vertical&&!hasRealEstateSignal){
     scopeNote.style.display='block';
   } else {
     scopeNote.style.display='none';
