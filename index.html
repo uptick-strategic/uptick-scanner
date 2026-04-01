@@ -575,13 +575,16 @@ function renderResults(level,found,jsonldSet){
     summaryEl.innerHTML=buildGenericSummary(level,found);
   }
 
-  // Pills — use JSON-LD confirmed types for display
-  // Exclude display-only noise types and microdata-only LocalBusiness
-  var displayExclude=new Set(['GeoCoordinates','PostalAddress']);
+  // Pills — only show types confirmed in JSON-LD for ambiguous types
+  // Always exclude noise types regardless of source
+  var alwaysExclude=new Set(['GeoCoordinates','PostalAddress']);
+  // Only show these types if confirmed in JSON-LD, not microdata alone
+  var jsonldOnly=new Set(['LocalBusiness']);
+  var safeJsonldSet=jsonldSet||new Set();
   var fp=document.getElementById('foundPills');fp.innerHTML='';
   var displayFound=found.filter(function(t){
-    if(displayExclude.has(t))return false;
-    if(t==='LocalBusiness'&&jsonldSet&&!jsonldSet.has('LocalBusiness'))return false;
+    if(alwaysExclude.has(t))return false;
+    if(jsonldOnly.has(t)&&!safeJsonldSet.has(t))return false;
     return true;
   });
   if(displayFound.length){
