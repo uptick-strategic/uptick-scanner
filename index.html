@@ -529,7 +529,7 @@ function buildGenericSummary(level,found){
   return 'AI platforms can identify this as <strong>a website — but no business identity is machine-readable.</strong> Without structured data identifying your business type, location, or services, this page provides AI platforms little to work with.';
 }
 
-function renderResults(level,found,jsonldFound){
+function renderResults(level,found,jsonldSet){
   // Hide out of scope
   document.getElementById('outOfScopeWrap').style.display='none';
   document.getElementById('ctaBlock').style.display='block';
@@ -579,11 +579,9 @@ function renderResults(level,found,jsonldFound){
   // Exclude display-only noise types and microdata-only LocalBusiness
   var displayExclude=new Set(['GeoCoordinates','PostalAddress']);
   var fp=document.getElementById('foundPills');fp.innerHTML='';
-  var jsonldSet=new Set(jsonldFound||found);
   var displayFound=found.filter(function(t){
     if(displayExclude.has(t))return false;
-    // Only show LocalBusiness if confirmed in JSON-LD
-    if(t==='LocalBusiness'&&!jsonldSet.has('LocalBusiness'))return false;
+    if(t==='LocalBusiness'&&jsonldSet&&!jsonldSet.has('LocalBusiness'))return false;
     return true;
   });
   if(displayFound.length){
@@ -617,10 +615,11 @@ function renderResults(level,found,jsonldFound){
     vw.style.display='none';
   }
 
-  // Scope note — only show when a positively non-real-estate type is detected but no vertical
+  // Scope note — show when no vertical detected AND no real-estate-adjacent signal present
+  var realEstateSignals=new Set(['RealEstateListing','Residence','House','Apartment','Accommodation','SingleFamilyResidence','ApartmentComplex','LodgingBusiness','RealEstateAgent']);
+  var hasRealEstateSignal=found.some(function(t){return realEstateSignals.has(t);});
   var scopeNote=document.getElementById('scopeNote');
-  var hasOutOfScopeSignal=found.some(function(t){return OUT_OF_SCOPE_TYPES.has(t);});
-  if(!vertical&&hasOutOfScopeSignal){
+  if(!vertical&&!hasRealEstateSignal){
     scopeNote.style.display='block';
   } else {
     scopeNote.style.display='none';
@@ -676,9 +675,12 @@ function runScan(){
       if(!html)throw new Error('No content returned.');
       setLbl('Analysing schema markup\u2026');
       var extracted=extractTypes(html);
-      var allTypes=new Set([...extracted.jsonld,...extracted.microdata]);
+      var allTypes=new Set();
+      extracted.jsonld.forEach(function(t){allTypes.add(t);});
+      extracted.microdata.forEach(function(t){allTypes.add(t);});
       var found=Array.from(allTypes).filter(function(t){return KNOWN.has(t);});
       var jsonldFound=Array.from(extracted.jsonld).filter(function(t){return KNOWN.has(t);});
+      var jsonldSet=new Set(jsonldFound);
       var high=found.filter(function(t){return HIGH.has(t);});
       var vertical=detectVertical(found);
       document.getElementById('spinnerWrap').style.display='none';
@@ -687,7 +689,7 @@ function runScan(){
       if(!vertical&&hasOutOfScopeType){
         renderOutOfScope();
       } else {
-        renderResults(score(found,high),found,jsonldFound);
+        renderResults(score(found,high),found,jsonldSet);
       }
     })
     .catch(function(e){
