@@ -400,12 +400,17 @@ function showErr(h){document.getElementById('errText').innerHTML=h;document.getE
 function hideErr(){document.getElementById('errBlock').style.display='none';}
 function extractTypes(html){
   var jsonldTypes=new Set(),m;
-  var re=/<script[^>]+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi;
-  while((m=re.exec(html))!==null){try{collect(JSON.parse(m[1].trim()),jsonldTypes);}catch(e){}}
+  var re=/<script[^>]+type=["\']application\/ld\+json["\'][^>]*>([\s\S]*?)<\/script>/gi;
+  while((m=re.exec(html))!==null){try{collectTopLevel(JSON.parse(m[1].trim()),jsonldTypes);}catch(e){}}
   var microdataTypes=new Set();
-  var mre=/itemtype=["'][^"']*schema\.org\/([A-Za-z]+)["']/gi;
+  var mre=/itemtype=["\'][^"\']*schema\.org\/([A-Za-z]+)["\']/gi;
   while((m=mre.exec(html))!==null)microdataTypes.add(m[1]);
   return {jsonld:jsonldTypes,microdata:microdataTypes};
+}
+function collectTopLevel(o,s){
+  if(!o||typeof o!=='object')return;
+  if(o['@type']){var t=o['@type'];(Array.isArray(t)?t:[t]).forEach(function(x){s.add(x);});}
+  if(Array.isArray(o['@graph'])){o['@graph'].forEach(function(n){collectTopLevel(n,s);});}
 }
 function collect(o,s){if(!o||typeof o!=='object')return;if(o['@type']){var t=o['@type'];(Array.isArray(t)?t:[t]).forEach(function(x){s.add(x);});}if(Array.isArray(o['@graph']))o['@graph'].forEach(function(n){collect(n,s);});Object.values(o).forEach(function(v){if(v&&typeof v==='object')collect(v,s);});}
 function score(found,high){if(found.length===0)return'red';if(found.length>=4||high.length>=2)return'green';return'amber';}
