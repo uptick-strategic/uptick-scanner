@@ -80,6 +80,7 @@ h1 i{font-style:italic;color:#c4beee;}
 .v-amber .coverage-score{color:#fbbf24;}
 .v-red .coverage-score{color:#f87171;}
 .coverage-desc{font-size:14px;color:#fff;text-align:right;max-width:260px;line-height:1.5;}
+.coverage-qualify{font-size:12px;font-weight:300;color:rgba(255,255,255,0.45);line-height:1.6;margin-top:12px;font-style:italic;}
 
 /* AI Summary */
 .ai-summary{padding:22px 28px;margin-bottom:16px;border-left:4px solid;}
@@ -238,12 +239,13 @@ h1 i{font-style:italic;color:#c4beee;}
     </div>
 
     <div id="coverageWrap" class="coverage-wrap" style="display:none;">
-      <p class="coverage-label">AI visibility coverage</p>
+      <p class="coverage-label">AI detectability — this page</p>
       <div class="coverage-bar-bg"><div class="coverage-bar-fill" id="coverageFill" style="width:0%;"></div></div>
       <div class="coverage-meta">
         <span class="coverage-score" id="coverageScore"></span>
         <span class="coverage-desc" id="coverageDesc"></span>
       </div>
+      <p class="coverage-qualify">This rating reflects schema markup detected on this page only. A full audit covers up to 10 pages.</p>
     </div>
 
     <div class="ai-summary" id="aiSummaryWrap" style="display:none;">
@@ -318,7 +320,7 @@ h1 i{font-style:italic;color:#c4beee;}
 
 <script>
 var KNOWN=new Set(['Organization','LocalBusiness','ProfessionalService','FinancialService','RealEstateAgent','RealEstateListing','Residence','Apartment','ApartmentComplex','House','SingleFamilyResidence','Accommodation','LodgingBusiness','WebSite','WebPage','FAQPage','BreadcrumbList','ItemList','Product','Offer','Review','AggregateRating','Person','PostalAddress','ImageObject','VideoObject','Article','BlogPosting','Event','SiteLinksSearchBox','SearchAction','ContactPage','AboutPage']);
-var HIGH=new Set(['FAQPage','Organization','LocalBusiness','RealEstateAgent','ApartmentComplex','FinancialService','AggregateRating','Offer','Person','ProfessionalService','LodgingBusiness','SingleFamilyResidence']);
+var HIGH=new Set(['FAQPage','Organization','RealEstateAgent','ApartmentComplex','LodgingBusiness','SingleFamilyResidence','Residence','House','Apartment','Accommodation','RealEstateListing','ProfessionalService','Person','AggregateRating']);
 
 var VERTICALS={
   'RealEstateAgent':{
@@ -413,7 +415,15 @@ function collectTopLevel(o,s){
   if(Array.isArray(o['@graph'])){o['@graph'].forEach(function(n){collectTopLevel(n,s);});}
 }
 function collect(o,s){if(!o||typeof o!=='object')return;if(o['@type']){var t=o['@type'];(Array.isArray(t)?t:[t]).forEach(function(x){s.add(x);});}if(Array.isArray(o['@graph']))o['@graph'].forEach(function(n){collect(n,s);});Object.values(o).forEach(function(v){if(v&&typeof v==='object')collect(v,s);});}
-function score(found,high){if(found.length===0)return'red';if(found.length>=4||high.length>=2)return'green';return'amber';}
+var STRUCTURAL=new Set(['WebSite','WebPage','BreadcrumbList','ImageObject','VideoObject','SearchAction','SiteLinksSearchBox','ItemList','ContactPage','AboutPage','Article','BlogPosting','PostalAddress']);
+var HIGH=new Set(['RealEstateAgent','ApartmentComplex','LodgingBusiness','SingleFamilyResidence','Residence','House','Apartment','Accommodation','RealEstateListing','FAQPage','Organization','ProfessionalService','Person','AggregateRating']);
+function score(found,high){
+  if(found.length===0)return'red';
+  var nonStructural=found.filter(function(t){return !STRUCTURAL.has(t);});
+  if(nonStructural.length===0)return'amber';
+  if(nonStructural.length>=2)return'green';
+  return'amber';
+}
 function detectVertical(found){for(var i=0;i<VERTICAL_PRIORITY.length;i++){if(found.indexOf(VERTICAL_PRIORITY[i])>-1)return VERTICAL_PRIORITY[i];}return null;}
 
 function setStateClass(level){
@@ -543,14 +553,14 @@ function renderResults(level,found,jsonldSet){
 
   // Verdict
   var sm={
-    green:'Schema detected — good foundation',
-    amber:'Limited schema markup detected',
-    red:'No schema markup detected'
+    green:'Schema detected — clearly detectable',
+    amber:'Schema detected — partially detectable',
+    red:'Schema not detectable'
   };
   var tm={
     green:'Multiple schema markup categories found. AI platforms have a meaningful signal to work with on this page.',
-    amber:'Some schema markup is present, but may not be enough for AI platforms to accurately identify your business.',
-    red:'No schema markup was found on this page.'
+    amber:'Some schema markup is present — but may not be enough for AI platforms to accurately identify this page.',
+    red:'No schema markup was found on this page — AI platforms cannot identify this as a specific business or property.'
   };
   document.getElementById('verdictStatus').textContent=sm[level];
   document.getElementById('verdictText').textContent=tm[level];
@@ -559,9 +569,9 @@ function renderResults(level,found,jsonldSet){
   var cw=document.getElementById('coverageWrap');
   cw.style.display='block';
   var scoreMap={
-    green:{label:'Good',desc:'Several recommended schema markup categories detected on this page',pct:'72%'},
-    amber:{label:'Limited',desc:'Only limited schema markup categories detected on this page',pct:'28%'},
-    red:{label:'None',desc:'No recommended schema markup categories detected on this page',pct:'4%'}
+    green:{label:'Clearly Detectable',desc:'Several schema markup categories detected — AI platforms have a meaningful signal on this page',pct:'72%'},
+    amber:{label:'Partially Detectable',desc:'Limited schema markup detected — AI platforms may have difficulty fully identifying this page',pct:'28%'},
+    red:{label:'Not Detectable',desc:'No schema markup detected — this page is not identifiable by AI platforms',pct:'4%'}
   };
   document.getElementById('coverageScore').textContent=scoreMap[level].label;
   document.getElementById('coverageDesc').textContent=scoreMap[level].desc;
