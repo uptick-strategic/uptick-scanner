@@ -571,10 +571,10 @@ function renderResults(level,found,jsonldSet){
   var scoreMap={
     green:{label:'Clearly Detectable',desc:'Several schema markup categories detected on this page',pct:'72%'},
     amber:{label:'Partially Detectable',desc:'Limited schema markup categories detected on this page',pct:'28%'},
-    red:{label:'Not Detectable',desc:'No schema markup categories detected on this page',pct:'4%'}
+    red:{label:'Not Detectable',desc:'No schema markup categories<br>detected on this page',pct:'4%'}
   };
   document.getElementById('coverageScore').textContent=scoreMap[level].label;
-  document.getElementById('coverageDesc').textContent=scoreMap[level].desc;
+  document.getElementById('coverageDesc').innerHTML=scoreMap[level].desc;
   document.getElementById('coverageFill').style.width=scoreMap[level].pct;
 
   // Detect vertical
